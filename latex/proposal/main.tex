@@ -1,0 +1,68 @@
+\documentclass[paper=a4, fontsize=11pt]{article} % A4 paper and 11pt font size
+
+\usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
+\usepackage[english]{babel} % English language/hyphenation
+
+%\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ left=30mm,
+ right=30mm,
+ top=30mm,
+ bottom=30mm,
+ }
+ 
+\usepackage{hyperref}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{cite}
+
+\renewcommand{\baselinestretch}{1.5}
+
+\title{
+\vspace{-2cm}
+\normalfont 
+\horrule{0.5pt} \\ [0.5 cm]% Thin top horizontal rule
+\vspace{-0.5cm}
+\LARGE Final Project Proposal \\% The assignment title
+\vspace{-0.5cm}
+\horrule{2pt} \\% Thick bottom horizontal rule
+\large
+\renewcommand{\baselinestretch}{1}
+\textsc{\\ Lovenoor (Lavi) Aulck, Yea-Seul Kim, Ian Wesley-Smith \\ University of Washington - CSE 512, Spring 2016 \\ May 9, 2016}% Your university, school and/or department name(s)
+\renewcommand{\baselinestretch}{1}
+\date{}
+}
+\begin{document}
+\maketitle
+
+\vspace{-2cm}
+\section*{Overview}
+For our project in CSE 512, we will look to explore Expectation Visualization (EV) - an interactive technique for soliciting users' prior expectation of data and presenting personalized feedback based on this prior expectation. Below, we outline three steps to EV as we would like to explore it and provide corresponding design questions: 
+
+\begin{itemize}
+
+\item Step 1: Let users draw their expectation of the underlying data. \\
+\textit{Design question: Which interactions are the most congruent way of soliciting user's expectations for different chart types?}
+
+\item Step 2: Visualize the underlying data along with the user's expectation. \\
+\textit{Design question: Which visualizations/interactions are best suited to allow users to adjust their expectations towards the true data? How do these interactions differ by chart types?}
+
+\item Step 3: Visualize the underlying data along with the user's expectation and other people's expectations. \\
+\textit{Design question: How do we visualize the aggregated result along with the true data and the user's expectation? How do we visualize uncertainty around the aggregated data?}
+\end{itemize}
+
+\section*{Goals}
+At the least, we hope to implement the above for two chart types: line charts and bar charts. For line charts, the interaction will involve users drawing their expected line using the mouse and for bar charts it will involve users dragging bars to the appropriate sizes. We hope to implement everything in a mobile browser using D3.
+
+Once the above is completed, we hope to extend the idea of EV to other chart types. Some possibilities include: box plots, scatter plots (and drawing estimated regression fits), clustering of groups, labelling treemaps, and coloring chloropleths. As should be fairly plain to see, each of these pose unique challenges for one or more of the above steps. At this point, we are unsure of what exactly will work - we hope to try and find out.
+
+As a stretch goal, once we've implemented EV for a range of chart types using the three steps outlined above, we intend to explore how we can make such interactions more touch-friendly. As an example, one can see how it would be much easier and more straightforward for one to draw a line using a stylus on a touchscreen than on a laptop using the mousepad.
+
+Any suggestions/ideas/comments/concerns are most welcome.
+
+\end{document}
