@@ -13,10 +13,6 @@ body {
   shape-rendering: crispEdges;
 }
 
-.x.axis path {
-  display: none;
-}
-
 .line {
   fill: none;
   stroke: steelblue;
@@ -32,9 +28,7 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
-var formatDate = d3.time.format("%d-%b-%y");
-
-var x = d3.time.scale()
+var x = d3.scale.linear()
     .range([0, width]);
 
 var y = d3.scale.linear()
@@ -49,8 +43,8 @@ var yAxis = d3.svg.axis()
     .orient("left");
 
 var line = d3.svg.line()
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.close); });
+    .x(function(d) { return x(d.Year); })
+    .y(function(d) { return y(d.Total); });
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -58,16 +52,16 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.tsv("data.tsv", type, function(error, data) {
+d3.csv("data.csv", type, function(error, data) {
   if (error) throw error;
-
-  x.domain(d3.extent(data, function(d) { return d.date; }));
-  y.domain(d3.extent(data, function(d) { return d.close; }));
-
+  console.log(data)
+  x.domain(d3.extent(data, function(d) { return d.Year; }));
+  y.domain(d3.extent(data, function(d) { return d.Total; }));
+  
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+      .call(xAxis.tickFormat(d3.format()));
 
   svg.append("g")
       .attr("class", "y axis")
@@ -77,7 +71,7 @@ d3.tsv("data.tsv", type, function(error, data) {
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Price ($)");
+      .text("Million Metric Tons of C");
 
   svg.append("path")
       .datum(data)
@@ -86,8 +80,8 @@ d3.tsv("data.tsv", type, function(error, data) {
 });
 
 function type(d) {
-  d.date = formatDate.parse(d.date);
-  d.close = +d.close;
+  d.Year = parseInt(d.Year)
+  d.Total = +d.Total;
   return d;
 }
 
