@@ -1,10 +1,24 @@
 var data;
+var clicked = false;
+var ptdata = [];
 
 d3.csv("data.csv", function(rows) {
   data = rows;
   render_chart();
 });
 
+var line = d3.svg.line()
+    .interpolate("basis")
+    .x(function(d, i) { return d[0]; })
+    .y(function(d, i) { return d[1]; });
+
+function tick(pt) {
+  ptdata.push(pt);
+  d3.select("#user-guess").attr("d", function(d) { return line(d);});
+}
+
+document.onmousedown = function(e) { e.preventDefault(); clicked = true; };
+document.onmouseup = function() { clicked = false; };
 
 function render_chart() {
   var margin = {top: 20, right: 20, bottom: 30, left: 50},
@@ -32,6 +46,7 @@ function render_chart() {
   var svg = d3.select("body").select("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
+      .on("mousemove", function() { if (clicked) { var pt = d3.mouse(this); tick(pt);} })
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -52,4 +67,11 @@ function render_chart() {
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text("Million Metric Tons of C");
+
+  svg.append("g")
+    .append("path")
+    .data([ptdata])
+    .attr("class", "line")
+    .attr("id", "user-guess")
+    .attr("d", line);
 }
