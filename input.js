@@ -2,28 +2,49 @@ var data;
 var clicked = false;
 var ptdata = [];
 
+var LEFT_BUTTON = 0;
+var MIDDLE_BUTTON = 1;
+var RIGHT_BUTTON = 2;
+
+var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
 d3.csv("data.csv", function(rows) {
   data = rows;
   render_chart();
 });
 
-var line = d3.svg.line()
-    .interpolate("basis")
-    .x(function(d, i) { return d[0]; })
-    .y(function(d, i) { return d[1]; });
-
-function tick(pt) {
-  ptdata.push(pt);
+function redraw_line() {
   d3.select("#user-guess").attr("d", function(d) { return line(d);});
 }
 
-document.onmousedown = function(e) { e.preventDefault(); clicked = true; };
-document.onmouseup = function() { clicked = false; };
+d3.select("#clear").on("click", function() { ptdata = []; redraw_line(); });
+
+var line = d3.svg.line()
+    .interpolate("basis")
+    .x(function(d, i) { return d[0] - margin.left; })
+    .y(function(d, i) { return d[1] - margin.top; });
+
+function tick(pt) {
+  ptdata.push(pt);
+  redraw_line();
+}
+
+document.onmousedown = function(e) {
+  if (e.button == LEFT_BUTTON) {
+    e.preventDefault();
+    clicked = true;
+  }
+};
+
+document.onmouseup = function(e) {
+  if (e.button == LEFT_BUTTON) {
+    clicked = false;
+  }
+};
 
 function render_chart() {
-  var margin = {top: 20, right: 20, bottom: 30, left: 50},
-      width = 960 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
 
   var x = d3.scale.linear()
       .range([0, width]);
