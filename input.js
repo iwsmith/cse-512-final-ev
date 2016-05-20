@@ -1,6 +1,7 @@
 var data;
 var clicked = false;
 var ptdata = [];
+var xticks;
 
 var LEFT_BUTTON = 0;
 var MIDDLE_BUTTON = 1;
@@ -15,6 +16,20 @@ d3.csv("data.csv", function(rows) {
   render_chart();
 });
 
+function find_closest(haystack, needle) {
+  var dist = haystack.map(function (n, idx) { return [Math.abs( needle - n ), n];});
+  dist.sort(function (a, b) {
+    if (a[0] < b[0]) {
+      return -1;
+    } else if (a[0] > b[0]) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+  return dist[0][1];
+}
+
 function redraw_line() {
   d3.select("#user-guess").attr("d", function(d) { return line(d);});
 }
@@ -27,6 +42,7 @@ var line = d3.svg.line()
     .y(function(d, i) { return d[1] - margin.top; });
 
 function tick(pt) {
+  pt[0] = find_closest(xticks, pt[0]);
   ptdata.push(pt);
   redraw_line();
 }
@@ -68,6 +84,7 @@ function render_chart() {
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .on("mousemove", function() { if (clicked) { var pt = d3.mouse(this); tick(pt);} })
+      .on("click", function() { console.log(d3.mouse(this)); })
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -95,4 +112,7 @@ function render_chart() {
     .attr("class", "line")
     .attr("id", "user-guess")
     .attr("d", line);
+
+    xticks = Array.from(document.querySelectorAll(".x.axis > .tick > line"))
+    .map(function (e) { return e.getBoundingClientRect().left;});
 }
