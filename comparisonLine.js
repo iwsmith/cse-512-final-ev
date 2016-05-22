@@ -23,7 +23,7 @@ var comparisonLine = d3.svg.line()
     .x(function(d) { return x(d.Year); })
     .y(function(d) { return y(d.Total); });
 	
-d3.select("#next").on("click", drawComparisonLine);
+d3.select("#actual").on("click", drawComparisonLine);
 
 	
 function drawComparisonLine(){
