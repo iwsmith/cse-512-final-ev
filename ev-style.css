@@ -3,8 +3,37 @@ body {
 }
 
 #lineDataSource {
-	padding-right: 10%;
+	padding-right: 30px;
+	padding-bottom: 20px;
 	text-align: right;
+}
+
+#headings {
+	padding: 20px;
+	padding-left: 30px;
+	padding-right: 30px;
+}
+
+#headings p {
+	font-size: 10pt;
+	color: #878787;
+}
+
+#lineInstructions {
+	padding-left: 30px;
+	padding-right: 30px;
+	padding-bottom: 10px;
+	font-size: 10pt;
+}
+
+#lineButtons {
+	padding-left: 30px;
+}
+
+h1 {
+	text-align: center;
+	font-size: 32pt;
+	color: #000;
 }
 
 .axis path,
