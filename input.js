@@ -44,7 +44,7 @@ function redraw_line() {
   d3.select("#user-guess").attr("d", function(d) { return line(d);});
 }
 
-d3.select("#clear").on("click", function() { ptdata = []; redraw_line(); });
+d3.select("#clear").on("click", function() { update([]); });
 
 var line = d3.svg.line()
   //  .interpolate("basis")

@@ -49,6 +49,14 @@ h1 {
   stroke-width: 1.5px;
 }
 
+.points {
+  fill: none;
+  stroke: steelblue;
+  r: 5px;
+  stroke-width: 2px;
+}
+
+
 .comparisonLine {
   fill: none;
   stroke: #ff8c00;
