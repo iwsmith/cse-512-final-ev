@@ -1,7 +1,9 @@
 var data;
 var clicked = false;
-var ptdata = [];
 var xticks;
+var chart;
+var points;
+var ptdata = [];
 
 var LEFT_BUTTON = 0;
 var MIDDLE_BUTTON = 1;
@@ -13,8 +15,16 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
 
 d3.csv("dataForLine.csv", function(rows) {
   data = rows;
-  render_chart();
+  chart = render_chart();
 });
+
+function init_user_data(ticks) {
+  var user_guess = {};
+  ticks.forEach(function (n) {
+    user_guess[n] = null;
+  });
+  return user_guess;
+}
 
 function find_closest(haystack, needle) {
   var dist = haystack.map(function (n, idx) { return [Math.abs( needle - n ), n];});
@@ -37,14 +47,14 @@ function redraw_line() {
 d3.select("#clear").on("click", function() { ptdata = []; redraw_line(); });
 
 var line = d3.svg.line()
-    .interpolate("basis")
+  //  .interpolate("basis")
     .x(function(d, i) { return d[0] - margin.left; })
     .y(function(d, i) { return d[1] - margin.top; });
 
-function tick(pt) {
-  pt[0] = find_closest(xticks, pt[0]);
-  ptdata.push(pt);
-  redraw_line();
+function tick(pt, points) {
+  pt[0] = find_closest(d3.keys(points), pt[0]);
+  points[pt[0]] = pt[1];
+  return update(d3.zip(d3.keys(points).map(parseFloat), d3.values(points)).filter(function (n) { return n[1] !== null;}));
 }
 
 document.onmousedown = function(e) {
@@ -59,6 +69,16 @@ document.onmouseup = function(e) {
     clicked = false;
   }
 };
+
+function update(data) {
+  var dots = d3.select("svg").selectAll(".points").data(data, function(d) { return d[0]; });
+  dots.enter().append("circle").attr("r", 3).attr("class", "points");
+
+  dots.attr("cx", function (d) { return d[0]; })
+  .attr("cy", function (d) { return d[1]; });
+
+  dots.exit().remove();
+}
 
 function render_chart() {
 
@@ -83,8 +103,8 @@ function render_chart() {
   var svg = d3.select("body").select("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
-      .on("mousemove", function() { if (clicked) { var pt = d3.mouse(this); tick(pt);} })
-      .on("click", function() { console.log(d3.mouse(this)); })
+      .on("mousemove", function() { if (clicked) { tick(d3.mouse(this), points);} })
+      .on("click", function() { tick(d3.mouse(this), points); })
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -106,13 +126,18 @@ function render_chart() {
       .style("text-anchor", "end")
       .text("Million Metric Tons of C");
 
+  var l_xticks = Array.from(document.querySelectorAll(".x.axis > .tick > line"))
+  .map(function (e) { return e.getBoundingClientRect().left;});
+
+  points = init_user_data(l_xticks);
+
+/*
   svg.append("g")
     .append("path")
-    .data([ptdata])
+    .data(ptdata)
     .attr("class", "line")
     .attr("id", "user-guess")
     .attr("d", line);
+    */
 
-    xticks = Array.from(document.querySelectorAll(".x.axis > .tick > line"))
-    .map(function (e) { return e.getBoundingClientRect().left;});
 }
