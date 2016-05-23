@@ -2,6 +2,11 @@ body {
   font: 10px sans-serif;
 }
 
+#lineDataSource {
+	padding-right: 10%;
+	text-align: right;
+}
+
 .axis path,
 .axis line {
   fill: none;
