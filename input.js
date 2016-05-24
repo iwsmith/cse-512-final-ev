@@ -44,7 +44,7 @@ function redraw_line() {
   d3.select("#user-guess").attr("d", function(d) { return line(d);});
 }
 
-d3.select("#clear").on("click", function() { update([]); });
+d3.select("#clear").on("click", function() { clear(points); update([]); });
 
 var line = d3.svg.line()
   //  .interpolate("basis")
@@ -55,6 +55,13 @@ function tick(pt, points) {
   pt[0] = find_closest(d3.keys(points), pt[0]);
   points[pt[0]] = pt[1];
   return update(d3.zip(d3.keys(points).map(parseFloat), d3.values(points)).filter(function (n) { return n[1] !== null;}));
+}
+
+function clear(obj) {
+  for (var key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+    obj[key] = null;
+  }
 }
 
 document.onmousedown = function(e) {
