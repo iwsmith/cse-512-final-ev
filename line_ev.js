@@ -126,7 +126,6 @@ d3.line_ev = function (true_values, aggregate_values) {
   };
 
   line_ev.draw_agg = function() {
-    console.log(aggregate_values);
 		var labelVar = 'Date';
 		var subNames = d3.keys(aggregate_values[0])
 			.filter(function (key) { return key !== labelVar;});
