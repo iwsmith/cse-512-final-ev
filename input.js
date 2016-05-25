@@ -40,23 +40,27 @@ function find_closest(haystack, needle) {
   return dist[0][1];
 }
 
-function redraw_line() {
-  d3.select("#user-guess").attr("d", function(d) { return line(d);});
-}
-
 d3.select("#clear").on("click", function() { clear(points); update([]); });
 
 var line = d3.svg.line()
-  //  .interpolate("basis")
-    .x(function(d, i) { return d[0] - margin.left; })
-    .y(function(d, i) { return d[1] - margin.top; });
+    .interpolate("linear")
+    .x(function(d) { return d[0] - margin.left; })
+    .y(function(d) { return d[1] - margin.top; });
 
+/* Covert an object to a array of arrays: {k1:v1, k2:v2} -> [[k1 v1], [k2 v2]] */
+function convert_obj_to_array(obj) {
+  return d3.zip(d3.keys(obj).map(parseFloat),
+                d3.values(obj)).filter(function (n) { return n[1] !== null;});
+}
+
+/* Record a new user tick */
 function tick(pt, points) {
   pt[0] = find_closest(d3.keys(points), pt[0]);
   points[pt[0]] = pt[1];
-  return update(d3.zip(d3.keys(points).map(parseFloat), d3.values(points)).filter(function (n) { return n[1] !== null;}));
+  return update(convert_obj_to_array(points));
 }
 
+/* Set all values to null on an object */
 function clear(obj) {
   for (var key in obj) {
     if (!obj.hasOwnProperty(key)) continue;
@@ -78,13 +82,13 @@ document.onmouseup = function(e) {
 };
 
 function update(data) {
-  var dots = d3.select("svg").selectAll(".points").data(data, function(d) { return d[0]; });
-  dots.enter().append("circle").attr("r", 3).attr("class", "points");
+  var points = d3.select("svg").selectAll(".points").data(data, function(d) { return d[0]; });
+  points.enter().append("circle").attr("r", 3).attr("class", "points");
+  points.attr("cx", function (d) { return d[0]; })
+                            .attr("cy", function (d) { return d[1]; });
+  points.exit().remove();
 
-  dots.attr("cx", function (d) { return d[0]; })
-  .attr("cy", function (d) { return d[1]; });
-
-  dots.exit().remove();
+  d3.select(".line").attr("d", line(data));
 }
 
 function render_chart() {
@@ -102,10 +106,6 @@ function render_chart() {
   var yAxis = d3.svg.axis()
       .scale(y)
       .orient("left");
-
-  var line = d3.svg.line()
-      .x(function(d) { return x(d.Year); })
-      .y(function(d) { return y(d.Total); });
 
   var svg = d3.select("body").select("svg")
       .attr("width", width + margin.left + margin.right)
@@ -133,18 +133,10 @@ function render_chart() {
       .style("text-anchor", "end")
       .text("Million Metric Tons of C");
 
+    svg.append("path").attr("class", "line");
+
   var l_xticks = Array.from(document.querySelectorAll(".x.axis > .tick > line"))
   .map(function (e) { return e.getBoundingClientRect().left;});
 
   points = init_user_data(l_xticks);
-
-/*
-  svg.append("g")
-    .append("path")
-    .data(ptdata)
-    .attr("class", "line")
-    .attr("id", "user-guess")
-    .attr("d", line);
-    */
-
 }
