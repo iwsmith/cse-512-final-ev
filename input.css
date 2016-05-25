@@ -11,7 +11,7 @@ body {
 }
 
 .line {
-  fill: none;
+  fill: white;
   stroke: steelblue;
   stroke-width: 1.5px;
 }
