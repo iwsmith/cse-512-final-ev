@@ -31,15 +31,15 @@
 		Use the chart below to draw what you think the trend in global fossil fuel carbon emissions looks like. To draw, simply click and drag your mouse. To see the actual trend, click on the "Show Actual" button. To see an overlay of other users' estimates, click on the "Show Aggregates" button.
 	</div>
 	<div id="lineButtons">
-		<button class="btn btn-default" id="clear">Clear</button>
 		<button class="btn btn-default" id="actual">Show Actual</button>
 		<button class="btn btn-default" id="aggregates">Show Aggregates</button>
   </div>
   <div>
 		<svg></svg>
 	</div>
-	<div>
+	<div id="lineButtons">
 		<button class="btn btn-success" disabled="disabled" id="next">I'm Done</button>
+		<button class="btn btn-danger" id="clear">Try Again</button>
 		<div id="lineDataSource">
 			Data from the <a target="_blank" href="http://cdiac.ornl.gov/trends/emis/tre_glob_2011.html">Carbon Dioxide Information Analysis Center</a>
 		</div>
@@ -50,9 +50,10 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <!-- <script src="js/bootstrap.min.js"></script> -->
 	<script src="//d3js.org/d3.v3.min.js"></script>
-	<script src="input.js"></script>
+	<script src="line_ev.js"></script>
 	<script src="aggregateLine.js"></script>
 	<script src="comparisonLine.js"></script>
+	<script src="index.js"></script>
 
 
 </body>
