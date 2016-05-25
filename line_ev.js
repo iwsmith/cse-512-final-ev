@@ -1,6 +1,8 @@
 d3.line_ev = function (true_values) {
   MARGIN_DEFAULT = {top: 20, right: 20, bottom: 30, left: 50};
   var line_ev = {};
+  var x;
+  var y;
   var xAxis = null;
   var yAxis = null;
   var margin = MARGIN_DEFAULT;
@@ -12,10 +14,15 @@ d3.line_ev = function (true_values) {
   var MIDDLE_BUTTON = 1;
   var RIGHT_BUTTON = 2;
 
-  var line = d3.svg.line()
+  //TODO: Create screen<->chart conversion functions
+  var guess_line = d3.svg.line()
     .interpolate("linear")
     .x(function(d) { return d[0] - margin.left; })
     .y(function(d) { return d[1] - margin.top; });
+
+  var actual_line = d3.svg.line()
+    .x(function(d) { return x(d.Year); })
+    .y(function(d) { return y(d.Total); });
 
   document.onmousedown = function(e) {
     if (e.button == LEFT_BUTTON) {
@@ -30,15 +37,14 @@ d3.line_ev = function (true_values) {
     }
   };
 
-
   line_ev.render_chart = function (total_width, total_height, elem) {
     chart_width = total_width - margin.left - margin.right;
     chart_height = total_height - margin.top - margin.bottom;
 
-    var x = d3.scale.linear()
+    x = d3.scale.linear()
         .range([0, chart_width]);
 
-    var y = d3.scale.linear()
+    y = d3.scale.linear()
         .range([chart_height, 0]);
 
     xAxis = d3.svg.axis()
@@ -90,14 +96,30 @@ d3.line_ev = function (true_values) {
   };
 
   line_ev.update = function (data) {
-    //TODO: Change the selector here o
     var points = svg.selectAll(".points").data(data, function(d) { return d[0]; });
     points.enter().append("circle").attr("r", 3).attr("class", "points");
     points.attr("cx", function (d) { return d[0] - margin.left; })
           .attr("cy", function (d) { return d[1] - margin.top; });
     points.exit().remove();
 
-    d3.select(".line").attr("d", line(data));
+    d3.select(".line").attr("d", guess_line(data));
+  };
+
+  line_ev.draw_actual = function() {
+    console.log("sdsd");
+    var path = svg.append("path")
+    .datum(true_values)
+		.attr("class", "comparisonLine")
+		.attr("d", actual_line(true_values));
+
+		var totalLength = path.node().getTotalLength();
+
+		path.attr("stroke-dasharray", totalLength + ' ' + totalLength)
+			.attr("stroke-dashoffset", totalLength)
+			.transition()
+				.duration(4000)
+				.ease("linear")
+				.attr('stroke-dashoffset', 0);
   };
 
   function tick(pt) {
