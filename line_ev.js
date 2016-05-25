@@ -122,6 +122,10 @@ d3.line_ev = function (true_values) {
 				.attr('stroke-dashoffset', 0);
   };
 
+  line_ev.draw_agg = function() {
+    console.log("Draw aggregate");
+  };
+
   function tick(pt) {
     pt[0] = find_closest(d3.keys(user_guess), pt[0]);
     user_guess[pt[0]] = pt[1];

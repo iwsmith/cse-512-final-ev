@@ -4,9 +4,21 @@ d3.csv("dataForLine.csv", parse_row, function(rows) {
   line_ev = new d3.line_ev(rows);
   line_ev.render_chart(960, 500, d3.select("svg"));
   d3.select("#clear").on("click", line_ev.reset);
-  d3.select("#next").on("click", line_ev.draw_actual);
+  d3.select("#next").on("click", next(line_ev, "#next"));
 });
 
+function next(obj, btn_id) {
+  var seq = [obj.draw_agg, obj.draw_actual];
+
+  return function () {
+    if (seq.length > 0) {
+      seq.pop()();
+      if (seq.length === 0) {
+        d3.select(btn_id).attr("disabled", "disabled");
+      }
+    }
+  };
+}
 
 function parse_row(d) {
 	dataClean = getDataForTicks(d);
