@@ -1,4 +1,4 @@
-d3.line_ev = function (true_values) {
+d3.line_ev = function (true_values, aggregate_values) {
   MARGIN_DEFAULT = {top: 20, right: 20, bottom: 30, left: 50};
   var line_ev = {};
   var x;
@@ -23,6 +23,10 @@ d3.line_ev = function (true_values) {
   var actual_line = d3.svg.line()
     .x(function(d) { return x(d.Year); })
     .y(function(d) { return y(d.Total); });
+
+	var aggregate_line = d3.svg.line()
+		.x(function(d) { return x(d.date); })
+		.y(function(d) { return y(d.value); });
 
   document.onmousedown = function(e) {
     if (e.button == LEFT_BUTTON) {
@@ -106,7 +110,6 @@ d3.line_ev = function (true_values) {
   };
 
   line_ev.draw_actual = function() {
-    console.log("sdsd");
     var path = svg.append("path")
     .datum(true_values)
 		.attr("class", "comparisonLine")
@@ -123,7 +126,36 @@ d3.line_ev = function (true_values) {
   };
 
   line_ev.draw_agg = function() {
-    console.log("Draw aggregate");
+    console.log(aggregate_values);
+		var labelVar = 'Date';
+		var subNames = d3.keys(aggregate_values[0])
+			.filter(function (key) { return key !== labelVar;});
+
+		var seriesData = subNames.map(function (name) {
+			return {
+				values: aggregate_values.map(function (d) {
+  				return {name: name, date: d[labelVar], value: +d[name]};
+				})
+			};
+		});
+
+		var series = svg.selectAll(".series")
+			.data(seriesData)
+			.enter().append("g")
+			.attr("class", "series");
+
+		var path = series.append("path")
+			.attr("class", "aggregateLine")
+			.attr("d", function (d) { return aggregate_line(d.values); });
+
+		var totalLength = path.node().getTotalLength();
+
+		path.attr("stroke-dasharray", totalLength + " " + totalLength)
+			.attr("stroke-dashoffset", totalLength)
+			.transition()
+			.duration(4000)
+			.ease("linear")
+			.attr("stroke-dashoffset", 0);
   };
 
   function tick(pt) {
