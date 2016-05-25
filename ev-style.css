@@ -50,7 +50,7 @@ h1 {
 }
 
 .points {
-  fill: none;
+  fill: white;
   stroke: steelblue;
   r: 5px;
   stroke-width: 2px;
