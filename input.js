@@ -57,6 +57,9 @@ function convert_obj_to_array(obj) {
 function tick(pt, points) {
   pt[0] = find_closest(d3.keys(points), pt[0]);
   points[pt[0]] = pt[1];
+  if (d3.values(points).every(function (v) { return v !== null; })) {
+    d3.select("#next").attr("disabled", null);
+  }
   return update(convert_obj_to_array(points));
 }
 
@@ -81,6 +84,7 @@ document.onmouseup = function(e) {
   }
 };
 
+/* Whenever new data is added this function should be called */
 function update(data) {
   var points = d3.select("svg").selectAll(".points").data(data, function(d) { return d[0]; });
   points.enter().append("circle").attr("r", 3).attr("class", "points");
