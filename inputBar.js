@@ -1,3 +1,8 @@
+
+
+
+
+
 var margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = 600 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
@@ -18,6 +23,9 @@ var yAxis = d3.svg.axis()
     .orient("left")
     .ticks(10, "");
 
+
+
+
 var color = d3.scale.ordinal()
     .range(["#f1f1f1","black"]);
 
@@ -30,8 +38,11 @@ var svg = d3.select("body").select("svg")
 d3.csv("dataForBar.csv", type, function(error, data) {
   if (error) throw error;
 
+
+
   x.domain(data.map(function(d) { return d.country; }));
   y.domain([0, d3.max(data, function(d) { return d.emission; })]);
+
 
   svg.append("g")
       .attr("class", "x axis")
@@ -50,6 +61,13 @@ d3.csv("dataForBar.csv", type, function(error, data) {
       .style("text-anchor", "end")
       .text("emission (in inches)");
 
+    svg.append("g")         
+        .attr("class", "grid")
+        .call(make_y_axis()
+            .tickSize(-width, 0, 0)
+            .tickFormat("")
+        )
+
   svg.selectAll(".g")
     .data(data)
     .enter().append("g").each(function(d,i) {
@@ -66,11 +84,7 @@ d3.csv("dataForBar.csv", type, function(error, data) {
             if (d.country !="UNITED STATES OF AMERICA") {
               d3.select(this).attr("opacity", 0.0);
             }
-            })
-
-      
-      // .on("click",clickmove)
-      // .call(drag);
+        })
 
     d3.select(this)
       .append("circle")
@@ -159,6 +173,22 @@ d3.csv("dataForBar.csv", type, function(error, data) {
     }
   });
 }
+
+function make_x_axis() {        
+    return d3.svg.axis()
+        .scale(x)
+         .orient("bottom")
+         .ticks(5)
+}
+
+function make_y_axis() {        
+    return d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .ticks(5)
+}
+
+
 
   function updateData() {
     $('#legend').show();
