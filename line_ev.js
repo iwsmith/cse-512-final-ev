@@ -10,6 +10,8 @@ d3.line_ev = function (true_values, aggregate_values) {
   var xTicks = null;
   var user_guess = null;
   var clicked = false;
+  var chart_height;
+  var chart_width;
   var LEFT_BUTTON = 0;
   var MIDDLE_BUTTON = 1;
   var RIGHT_BUTTON = 2;
@@ -159,6 +161,8 @@ d3.line_ev = function (true_values, aggregate_values) {
 
   function tick(pt) {
     pt[0] = find_closest(d3.keys(user_guess), pt[0]);
+    pt[1] = Math.min(pt[1], chart_height + margin.top);
+    pt[1] = Math.max(pt[1], margin.top);
     user_guess[pt[0]] = pt[1];
     if (d3.values(user_guess).every(function (v) { return v !== null; })) {
       d3.select("#next").attr("disabled", null);
