@@ -13,7 +13,7 @@ d3.csv("userLineData(20Sub).csv", function(error, data) {
 
 
 function next(obj, btn_id) {
-  var seq = [obj.draw_agg, obj.draw_actual];
+  var seq = [function () { obj.disable_edit(); obj.draw_agg(); }, obj.draw_actual];
 
   return function () {
     if (seq.length > 0) {

@@ -15,6 +15,7 @@ d3.line_ev = function (true_values, aggregate_values) {
   var LEFT_BUTTON = 0;
   var MIDDLE_BUTTON = 1;
   var RIGHT_BUTTON = 2;
+  var can_edit = true;
 
   //TODO: Create screen<->chart conversion functions
   var guess_line = d3.svg.line()
@@ -87,6 +88,21 @@ d3.line_ev = function (true_values, aggregate_values) {
         .style("text-anchor", "end")
         .text("Million Metric Tons of C");
 
+    svg.append("g")
+        .attr("class", "grid")
+        .attr("transform", "translate(0," + chart_height + ")")
+        .call(xAxis
+            .tickSize(-chart_height, 0, 0)
+            .tickFormat("")
+        );
+
+    svg.append("g")
+         .attr("class", "grid")
+         .call(yAxis
+             .tickSize(-chart_width, 0, 0)
+             .tickFormat("")
+         );
+
     svg.append("path").attr("class", "line");
 
     // TODO: Change this to a unique id so multiple charts can exist on a single page
@@ -97,8 +113,13 @@ d3.line_ev = function (true_values, aggregate_values) {
   };
 
   line_ev.reset = function() {
+    can_edit = true;
     clear(user_guess);
     return line_ev.update(convert_obj_to_array(user_guess));
+  };
+
+  line_ev.disable_edit = function() {
+    can_edit = false;
   };
 
   line_ev.update = function (data) {
@@ -160,6 +181,9 @@ d3.line_ev = function (true_values, aggregate_values) {
   };
 
   function tick(pt) {
+    if (can_edit === false)
+      return;
+
     pt[0] = find_closest(d3.keys(user_guess), pt[0]);
     pt[1] = Math.min(pt[1], chart_height + margin.top);
     pt[1] = Math.max(pt[1], margin.top);
