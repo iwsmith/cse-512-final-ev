@@ -1,8 +1,4 @@
 
-
-
-
-
 var margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = 600 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
@@ -23,9 +19,6 @@ var yAxis = d3.svg.axis()
     .orient("left")
     .ticks(10, "");
 
-
-
-
 var color = d3.scale.ordinal()
     .range(["#f1f1f1","black"]);
 
@@ -37,8 +30,6 @@ var svg = d3.select("body").select("svg")
 
 d3.csv("dataForBar.csv", type, function(error, data) {
   if (error) throw error;
-
-
 
   x.domain(data.map(function(d) { return d.country; }));
   y.domain([0, d3.max(data, function(d) { return d.emission; })]);
@@ -178,14 +169,14 @@ function make_x_axis() {
     return d3.svg.axis()
         .scale(x)
          .orient("bottom")
-         .ticks(5)
+         .ticks(10)
 }
 
 function make_y_axis() {        
     return d3.svg.axis()
         .scale(y)
         .orient("left")
-        .ticks(5)
+        .ticks(10)
 }
 
 
